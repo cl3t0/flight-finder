@@ -9,8 +9,8 @@ class AmadeusApi(AbstractApi):
         pass
 
     class BadStatusCode(Exception):
-        def __init__(self, status_code: int, message: str) -> None:
-            super().__init__(f"{status_code}: {message}")
+        def __init__(self, status_code: int, message: bytes) -> None:
+            super().__init__(f"{status_code}: {str(message)}")
 
     class NotFlightError(Exception):
         def __init__(self) -> None:
