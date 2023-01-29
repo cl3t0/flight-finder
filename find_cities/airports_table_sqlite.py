@@ -1,8 +1,9 @@
 import sqlite3
 from typing import Tuple, Dict, List
+from find_cities.airports_table_int import AbstractAirportsTable
 
 
-class AirportsInterface:
+class SqliteAirportsTable(AbstractAirportsTable):
     def __init__(self) -> None:
 
         self.conn = sqlite3.connect("global_airports_sqlite.db")

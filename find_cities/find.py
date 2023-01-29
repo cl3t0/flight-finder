@@ -1,5 +1,5 @@
 from typing import Tuple, List, Generator
-from find_cities.airports_int import AirportsInterface
+from find_cities.airports_table_int import AbstractAirportsTable
 from find_cities.api_int import AbstractApi
 from datetime import date, timedelta
 from find_cities.mathematics import get_average_coordinate
@@ -13,9 +13,10 @@ class NotListedAirports(Exception):
         super().__init__(str(airports))
 
 
-def get_average_airports(airports: List[str]) -> List[str]:
-    airports_interface = AirportsInterface()
-    all_airports = airports_interface.get_all()
+def get_average_airports(
+    airports: List[str], airports_table: AbstractAirportsTable, limit: int
+) -> List[str]:
+    all_airports = airports_table.get_all()
 
     not_listed_airports = [
         airport for airport in airports if all_airports.get(airport) is None
@@ -27,7 +28,7 @@ def get_average_airports(airports: List[str]) -> List[str]:
     coordinates = [all_airports[airport] for airport in airports]
     average_coordinate = get_average_coordinate(coordinates)
 
-    return airports_interface.get_close_airports(average_coordinate, 10)
+    return airports_table.get_close_airports(average_coordinate, limit)
 
 
 def daterange(
@@ -38,9 +39,16 @@ def daterange(
 
 
 def find_best_airport_and_day(
-    airports: List[str], client: AbstractApi, from_date: date, to_date: date
+    airports: List[str],
+    client: AbstractApi,
+    airports_table: AbstractAirportsTable,
+    from_date: date,
+    to_date: date,
+    center_airports_limit: int = 10,
 ) -> Tuple[str, date, float]:
-    center_airports = get_average_airports(airports)
+    center_airports = get_average_airports(
+        airports, airports_table, center_airports_limit
+    )
     price_per_choice = {
         (airport, center_airport, current_day): price
         for center_airport in center_airports
