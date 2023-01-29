@@ -1,5 +1,5 @@
 import sqlite3
-from typing import Tuple, Dict
+from typing import Tuple, Dict, List
 
 
 class AirportsInterface:
@@ -18,3 +18,19 @@ class AirportsInterface:
         )
 
         return {row[0]: (row[1], row[2]) for row in cursor.fetchall()}
+
+    def get_close_airports(self, point: Tuple[float, float], limit: int) -> List[str]:
+        lat, long = point
+
+        cursor = self.conn.cursor()
+
+        cursor.execute(
+            "SELECT iata_code FROM airports"
+            " WHERE iata_code != 'N/A'"
+            " AND lat_decimal != 0"
+            " AND lon_decimal != 0"
+            f" ORDER BY POW(POW(lat_decimal - {lat}, 2) + POW(lon_decimal - {long}, 2), 0.5)"
+            f" LIMIT {limit}"
+        )
+
+        return [row[0] for row in cursor.fetchall()]
