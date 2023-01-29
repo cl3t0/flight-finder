@@ -104,7 +104,7 @@ class AmadeusApi(AbstractApi):
         )
 
         if response.status_code == 401:
-            self.token = AmadeusApi.get_token(
+            self.access_token = AmadeusApi.get_token(
                 f"{self.url}/{self.token_route}", self.key, self.secret
             )
             response = AmadeusApi.make_custom_req(

@@ -1,0 +1,26 @@
+from find_cities.airports_table_sqlite import SqliteAirportsTable
+from find_cities.find import find_best_airport_and_day
+from find_cities.amadeus_api import AmadeusApi
+from decouple import config
+from datetime import date
+
+key = config("API_KEY")
+secret = config("API_SECRET")
+url = config("API_URL")
+
+airports = ["JFK", "GRU", "PHX"]
+first_date = date(year=2023, month=3, day=1)
+last_date = date(year=2023, month=8, day=1)
+client = AmadeusApi(key, secret, url)
+airports_table = SqliteAirportsTable()
+
+result = find_best_airport_and_day(
+    airports,
+    client,
+    airports_table,
+    first_date,
+    last_date,
+    center_airports_limit=15,
+)
+
+print(result)
