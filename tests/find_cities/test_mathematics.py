@@ -1,5 +1,5 @@
 import pytest
-from find_cities.find import (
+from find_cities.mathematics import (
     get_3d_coords,
     get_average_in_3d,
     projection_to_surface,
