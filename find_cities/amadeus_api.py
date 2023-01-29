@@ -1,7 +1,12 @@
 from find_cities.api_int import AbstractApi
-from typing import List, Optional, Dict
-from datetime import date
+from typing import List, Dict, TypedDict
+from datetime import date, timedelta, datetime
 import requests
+
+
+class FlightData(TypedDict):
+    price: Dict[str, str]
+    itineraries: List[Dict[str, List[Dict[str, Dict[str, str]]]]]
 
 
 class AmadeusApi(AbstractApi):
@@ -12,7 +17,15 @@ class AmadeusApi(AbstractApi):
         def __init__(self, status_code: int, message: bytes) -> None:
             super().__init__(f"{status_code}: {str(message)}")
 
-    class NotFlightError(Exception):
+    class NoFlightError(Exception):
+        def __init__(self) -> None:
+            super().__init__("")
+
+    class NoItineraryError(Exception):
+        def __init__(self) -> None:
+            super().__init__("")
+
+    class NoSegmentError(Exception):
         def __init__(self) -> None:
             super().__init__("")
 
@@ -47,9 +60,12 @@ class AmadeusApi(AbstractApi):
 
         return access_token
 
-    def get_price_between(
+    def get_price_between_at_next_7_days(
         self, origin_airport: str, destination_airport: str, date: date
-    ) -> float:
+    ) -> Dict[date, float]:
+
+        central_date = date + timedelta(days=3)
+
         response = requests.post(
             f"{self.url}/{self.main_route}",
             headers={"Authorization": f"Bearer {self.access_token}"},
@@ -61,21 +77,21 @@ class AmadeusApi(AbstractApi):
                         "originLocationCode": origin_airport,
                         "destinationLocationCode": destination_airport,
                         "arrivalDateTimeRange": {
-                            "date": str(date),
-                            "dateWindow": "M3D",
+                            "date": str(central_date),
+                            "dateWindow": "I3D",
                         },
                     }
                 ],
                 "travelers": [{"id": "1", "travelerType": "ADULT"}],
                 "sources": ["GDS"],
-                "searchCriteria": {"maxFlightOffers": 1},
+                "searchCriteria": {"oneFlightOfferPerDay": True, "maxFlightOffers": 7},
             },
         )
 
         if response.status_code != 200:
             raise AmadeusApi.BadStatusCode(response.status_code, response.content)
 
-        response_json: Dict[str, List[Dict[str, Dict[str, str]]]] = response.json()
+        response_json: Dict[str, List[FlightData]] = response.json()
 
         data = response_json.get("data")
 
@@ -83,17 +99,52 @@ class AmadeusApi(AbstractApi):
             raise AmadeusApi.MissingFieldError("data")
 
         if len(data) == 0:
-            raise AmadeusApi.NotFlightError()
+            raise AmadeusApi.NoFlightError()
 
-        flight = data[0]
-        price = flight.get("price")
+        result = {}
 
-        if price is None:
-            raise AmadeusApi.MissingFieldError("price")
+        for flight in data:
+            itineraries = flight.get("itineraries")
 
-        total = price.get("total")
+            if itineraries is None:
+                raise AmadeusApi.MissingFieldError("itineraries")
 
-        if total is None:
-            raise AmadeusApi.MissingFieldError("total")
+            if len(itineraries) == 0:
+                raise AmadeusApi.NoItineraryError()
 
-        return float(total)
+            itinerary = itineraries[-1]
+            segments = itinerary.get("segments")
+
+            if segments is None:
+                raise AmadeusApi.MissingFieldError("segments")
+
+            if len(segments) == 0:
+                raise AmadeusApi.NoSegmentError()
+
+            segment = segments[-1]
+            arrival = segment.get("arrival")
+
+            if arrival is None:
+                raise AmadeusApi.MissingFieldError("arrival")
+
+            at = arrival.get("at")
+
+            if at is None:
+                raise AmadeusApi.MissingFieldError("at")
+
+            price = flight.get("price")
+
+            if price is None:
+                raise AmadeusApi.MissingFieldError("price")
+
+            total = price.get("total")
+
+            if total is None:
+                raise AmadeusApi.MissingFieldError("total")
+
+            parsed_at = datetime.fromisoformat(at).date()
+            parsed_total = float(total)
+
+            result[parsed_at] = parsed_total
+
+        return result

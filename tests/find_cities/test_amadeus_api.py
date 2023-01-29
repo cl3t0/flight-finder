@@ -12,5 +12,7 @@ def test_check_price_between_gru_and_cnf():
     url = config("API_URL")
 
     client = AmadeusApi(key, secret, url)
-    price = client.get_price_between("GRU", "CNF", date(year=2023, month=4, day=1))
-    assert price > 0
+    price = client.get_price_between_at_next_7_days(
+        "GRU", "CNF", date(year=2023, month=4, day=1)
+    )
+    assert len(price) > 0

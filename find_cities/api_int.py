@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from datetime import date
+from typing import Dict
 
 
 class AbstractApi(metaclass=ABCMeta):
@@ -8,5 +9,7 @@ class AbstractApi(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_price_between(self, airport1: str, airport2: str, date: date) -> float:
+    def get_price_between_at_next_7_days(
+        self, airport1: str, airport2: str, date: date
+    ) -> Dict[date, float]:
         pass
