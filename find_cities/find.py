@@ -1,8 +1,9 @@
-from typing import Tuple, List, Generator
 from find_cities.airports_table_int import AbstractAirportsTable
-from find_cities.api_int import AbstractApi
-from datetime import date, timedelta
 from find_cities.mathematics import get_average_coordinate
+from find_cities.api_int import AbstractApi
+from find_cities.utils import date_range
+from typing import Tuple, List
+from datetime import date
 
 Point2D = Tuple[float, float]
 Point3D = Tuple[float, float, float]
@@ -31,13 +32,6 @@ def get_average_airports(
     return airports_table.get_close_airports(average_coordinate, limit)
 
 
-def daterange(
-    start_date: date, end_date: date, step: int = 1
-) -> Generator[date, None, None]:
-    for n in range(0, int((end_date - start_date).days), step):
-        yield start_date + timedelta(n)
-
-
 def find_best_airport_and_day(
     airports: List[str],
     client: AbstractApi,
@@ -53,7 +47,7 @@ def find_best_airport_and_day(
         (airport, center_airport, current_day): price
         for center_airport in center_airports
         for airport in airports
-        for day in daterange(from_date, to_date, 7)
+        for day in date_range(from_date, to_date, 7)
         for current_day, price in client.get_price_between_at_next_7_days(
             airport, center_airport, day
         ).items()
@@ -67,7 +61,7 @@ def find_best_airport_and_day(
             ),
         )
         for center_airport in center_airports
-        for day in daterange(from_date, to_date)
+        for day in date_range(from_date, to_date)
     ]
     best_choice = min(price_per_choice_agg, key=lambda x: x[2])
     return best_choice
