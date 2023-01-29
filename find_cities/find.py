@@ -43,6 +43,8 @@ def find_best_airport_and_day(
     center_airports = get_average_airports(
         airports, airports_table, center_airports_limit
     )
+    print(f"airports: {airports}")
+    print(f"center_airports: {center_airports}")
     price_per_choice = {
         (airport, center_airport, current_day): price
         for center_airport in center_airports
