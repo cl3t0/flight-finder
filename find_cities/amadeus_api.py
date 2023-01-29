@@ -17,10 +17,6 @@ class AmadeusApi(AbstractApi):
         def __init__(self, status_code: int, message: bytes) -> None:
             super().__init__(f"{status_code}: {str(message)}")
 
-    class NoFlightError(Exception):
-        def __init__(self) -> None:
-            super().__init__("")
-
     class NoItineraryError(Exception):
         def __init__(self) -> None:
             super().__init__("")
@@ -60,15 +56,17 @@ class AmadeusApi(AbstractApi):
 
         return access_token
 
-    def get_price_between_at_next_7_days(
-        self, origin_airport: str, destination_airport: str, choosen_date: date
-    ) -> Dict[date, float]:
-
-        central_date = choosen_date + timedelta(days=3)
-
+    @staticmethod
+    def make_custom_req(
+        url: str,
+        access_token: str,
+        origin_airport: str,
+        destination_airport: str,
+        central_date: date,
+    ) -> requests.Response:
         response = requests.post(
-            f"{self.url}/{self.main_route}",
-            headers={"Authorization": f"Bearer {self.access_token}"},
+            url,
+            headers={"Authorization": f"Bearer {access_token}"},
             json={
                 "currencyCode": "USD",
                 "originDestinations": [
@@ -88,6 +86,35 @@ class AmadeusApi(AbstractApi):
             },
         )
 
+        return response
+
+    def get_price_between_at_next_7_days(
+        self, origin_airport: str, destination_airport: str, choosen_date: date
+    ) -> Dict[date, float]:
+        print(f"Getting price from {origin_airport} to {destination_airport}...")
+
+        central_date = choosen_date + timedelta(days=3)
+
+        response = AmadeusApi.make_custom_req(
+            f"{self.url}/{self.main_route}",
+            self.access_token,
+            origin_airport,
+            destination_airport,
+            central_date,
+        )
+
+        if response.status_code == 401:
+            self.token = AmadeusApi.get_token(
+                f"{self.url}/{self.token_route}", self.key, self.secret
+            )
+            response = AmadeusApi.make_custom_req(
+                f"{self.url}/{self.main_route}",
+                self.access_token,
+                origin_airport,
+                destination_airport,
+                central_date,
+            )
+
         if response.status_code != 200:
             raise AmadeusApi.BadStatusCode(response.status_code, response.content)
 
@@ -97,9 +124,6 @@ class AmadeusApi(AbstractApi):
 
         if data is None:
             raise AmadeusApi.MissingFieldError("data")
-
-        if len(data) == 0:
-            raise AmadeusApi.NoFlightError()
 
         result = {}
 
