@@ -1,5 +1,5 @@
 import sqlite3
-from find_cities.api.cacher_int import AbstractCacher
+from find_cities.cacher.cacher_int import AbstractCacher
 from datetime import date
 from typing import Optional
 from result import Result, Ok, Err

@@ -1,4 +1,4 @@
-from find_cities.api.cacher_int import AbstractCacher
+from find_cities.cacher.cacher_int import AbstractCacher
 from find_cities.api.api_int import AbstractApi
 from typing import Dict, Optional
 from datetime import date, timedelta
