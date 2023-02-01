@@ -1,5 +1,6 @@
 from find_cities.api_int import AbstractApi
-from typing import List, Dict, TypedDict
+from find_cities.utils import date_range
+from typing import List, Dict, TypedDict, Optional
 from datetime import date, timedelta, datetime
 import requests
 
@@ -90,8 +91,7 @@ class AmadeusApi(AbstractApi):
 
     def get_price_between_at_next_7_days(
         self, origin_airport: str, destination_airport: str, chosen_date: date
-    ) -> Dict[date, float]:
-        print(f"Getting price from {origin_airport} to {destination_airport}...")
+    ) -> Dict[date, Optional[float]]:
 
         central_date = chosen_date + timedelta(days=3)
 
@@ -171,4 +171,7 @@ class AmadeusApi(AbstractApi):
 
             result[parsed_at] = parsed_total
 
-        return result
+        return {
+            day: result.get(day)
+            for day in date_range(chosen_date, chosen_date + timedelta(days=7))
+        }
