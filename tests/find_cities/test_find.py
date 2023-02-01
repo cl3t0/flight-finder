@@ -1,5 +1,5 @@
 from find_cities.find import get_average_airports, find_best_airport_and_day
-from find_cities.airports_table_int import AbstractAirportsTable
+from find_cities.airports_table.airports_table_int import AbstractAirportsTable
 from find_cities.api.api_int import AbstractApi
 from find_cities.utils import date_range
 from typing import Tuple, Dict, List, Optional

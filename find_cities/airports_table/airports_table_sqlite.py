@@ -1,6 +1,6 @@
 import sqlite3
 from typing import Tuple, Dict, List
-from find_cities.airports_table_int import AbstractAirportsTable
+from find_cities.airports_table.airports_table_int import AbstractAirportsTable
 
 
 class SqliteAirportsTable(AbstractAirportsTable):

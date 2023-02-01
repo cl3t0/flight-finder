@@ -1,5 +1,5 @@
 import pytest
-from find_cities.airports_table_sqlite import SqliteAirportsTable
+from find_cities.airports_table.airports_table_sqlite import SqliteAirportsTable
 
 
 @pytest.mark.integ
