@@ -2,7 +2,7 @@ from find_cities.find import get_average_airports, find_best_airport_and_day
 from find_cities.airports_table_int import AbstractAirportsTable
 from find_cities.api_int import AbstractApi
 from find_cities.utils import date_range
-from typing import Tuple, Dict, List
+from typing import Tuple, Dict, List, Optional
 from datetime import date, timedelta
 
 
@@ -23,7 +23,7 @@ class MockedAirportsTable(AbstractAirportsTable):
 class MockedApi(AbstractApi):
     def get_price_between_at_next_7_days(
         self, airport1: str, airport2: str, choosen_date: date
-    ) -> Dict[date, float]:
+    ) -> Dict[date, Optional[float]]:
         data = {
             # B -> E
             ("B", "E", date(year=2023, month=1, day=1)): 2,
@@ -89,7 +89,7 @@ class MockedApi(AbstractApi):
             # A - 7 => 6 + 2 + 1 = 9  <-------
         }
         return {
-            day: data[(airport1, airport2, day)]
+            day: data.get((airport1, airport2, day))
             for day in date_range(choosen_date, choosen_date + timedelta(days=7))
         }
 
