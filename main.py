@@ -1,6 +1,8 @@
 from find_cities.airports_table_sqlite import SqliteAirportsTable
 from find_cities.find import find_best_airport_and_day
 from find_cities.amadeus_api import AmadeusApi
+from find_cities.sqlite_cacher import SqliteCacher
+from find_cities.caching_crust import CachingCrust
 from decouple import config
 from datetime import date
 
@@ -11,7 +13,8 @@ url = config("API_URL")
 airports = ["JFK", "GRU", "PHX"]
 first_date = date(year=2023, month=3, day=1)
 last_date = date(year=2023, month=8, day=1)
-client = AmadeusApi(key, secret, url)
+cacher = SqliteCacher("cache.db")
+client = CachingCrust(AmadeusApi(key, secret, url), cacher)
 airports_table = SqliteAirportsTable()
 
 result = find_best_airport_and_day(
