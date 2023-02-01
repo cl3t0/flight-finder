@@ -1,7 +1,7 @@
 include .env
 
-run:
-	@poetry run python main.py
+cli:
+	@poetry run python cli.py
 
 docker-build:
 	@docker build -t flight-finder .
