@@ -47,7 +47,6 @@ mypy-extensions = ">=0.4.3"
 pathspec = ">=0.9.0"
 platformdirs = ">=2"
 tomli = {version = ">=1.1.0", markers = "python_full_version < \"3.11.0a7\""}
-typing-extensions = {version = ">=3.10.0.0", markers = "python_version < \"3.10\""}
 
 [package.extras]
 colorama = ["colorama (>=0.4.3)"]
@@ -409,6 +408,18 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "result"
+version = "0.9.0"
+description = "A Rust-like result type for Python"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "result-0.9.0-py3-none-any.whl", hash = "sha256:2dd342c13fbf28d207c3f466f01a7915c6ee0d1fe3235fd9ba2041d36de498c1"},
+    {file = "result-0.9.0.tar.gz", hash = "sha256:cc4147c824221e8326d143a55065ec17b6337a9c0dda7700f7f947ca33ac63fd"},
+]
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -478,5 +489,5 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.8"
-content-hash = "8eeb58a8ac733464937b797945eee57dd696031f4c5168ee30b986ebf1b1fc24"
+python-versions = "3.10.9"
+content-hash = "ef463efa68d4b68a2a449d28b0388fd525c6e2c5c4d820f4277f7edb650ffc5f"
