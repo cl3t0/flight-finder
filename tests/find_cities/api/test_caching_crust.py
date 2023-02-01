@@ -1,6 +1,6 @@
 from find_cities.api.api_int import AbstractApi
 from find_cities.api.cacher_int import AbstractCacher
-from find_cities.api.caching_crust import CachingCrust
+from find_cities.api.caching_wrapper import CachingWrapper
 from find_cities.utils import date_range
 from datetime import date, timedelta
 from typing import Dict, Optional, Tuple
@@ -56,7 +56,7 @@ class InMemoryCacher(AbstractCacher):
 def test_storage_1():
     cacher = InMemoryCacher()
     client = MockedApi()
-    caching_client = CachingCrust(client, cacher)
+    caching_client = CachingWrapper(client, cacher)
     result = caching_client.get_price_between_at_next_7_days(
         "A", "B", date(year=2023, month=1, day=1)
     )
@@ -85,7 +85,7 @@ def test_storage_1():
 def test_storage_2():
     cacher = InMemoryCacher()
     client = MockedApi()
-    caching_client = CachingCrust(client, cacher)
+    caching_client = CachingWrapper(client, cacher)
     _ = caching_client.get_price_between_at_next_7_days(
         "A", "B", date(year=2023, month=1, day=1)
     )

@@ -6,7 +6,7 @@ from find_cities.utils import date_range
 from result import Ok, Err
 
 
-class CachingCrust(AbstractApi):
+class CachingWrapper(AbstractApi):
     def __init__(self, client: AbstractApi, cacher: AbstractCacher) -> None:
         self.client = client
         self.cacher = cacher
