@@ -1,4 +1,4 @@
-from find_cities.sqlite_cacher import SqliteCacher
+from find_cities.cacher.sqlite_cacher import SqliteCacher
 import pytest
 from datetime import date
 import os

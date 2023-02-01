@@ -1,5 +1,5 @@
 from find_cities.api.api_int import AbstractApi
-from find_cities.cacher_int import AbstractCacher
+from find_cities.api.cacher_int import AbstractCacher
 from find_cities.api.caching_crust import CachingCrust
 from find_cities.utils import date_range
 from datetime import date, timedelta
