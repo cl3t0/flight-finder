@@ -89,11 +89,11 @@ class AmadeusApi(AbstractApi):
         return response
 
     def get_price_between_at_next_7_days(
-        self, origin_airport: str, destination_airport: str, choosen_date: date
+        self, origin_airport: str, destination_airport: str, chosen_date: date
     ) -> Dict[date, float]:
         print(f"Getting price from {origin_airport} to {destination_airport}...")
 
-        central_date = choosen_date + timedelta(days=3)
+        central_date = chosen_date + timedelta(days=3)
 
         response = AmadeusApi.make_custom_req(
             f"{self.url}/{self.main_route}",
