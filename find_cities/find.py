@@ -2,8 +2,8 @@ from find_cities.airports_table_int import AbstractAirportsTable
 from find_cities.mathematics import get_average_coordinate
 from find_cities.api_int import AbstractApi
 from find_cities.utils import date_range
-from typing import Tuple, List
-from datetime import date
+from typing import Tuple, List, Dict
+from datetime import date, timedelta
 
 Point2D = Tuple[float, float]
 Point3D = Tuple[float, float, float]
@@ -32,6 +32,16 @@ def get_average_airports(
     return airports_table.get_close_airports(average_coordinate, limit)
 
 
+def get_travel_price(
+    client: AbstractApi, airport1: str, airport2: str, day: date
+) -> Dict[date, float]:
+    return (
+        {d: 0 for d in date_range(day, day + timedelta(days=7))}
+        if airport1 == airport2
+        else client.get_price_between_at_next_7_days(airport1, airport2, day)
+    )
+
+
 def find_best_airport_and_day(
     airports: List[str],
     client: AbstractApi,
@@ -43,15 +53,16 @@ def find_best_airport_and_day(
     center_airports = get_average_airports(
         airports, airports_table, center_airports_limit
     )
+    candidate_airports = center_airports + airports
     print(f"airports: {airports}")
-    print(f"center_airports: {center_airports}")
+    print(f"candidate_airports: {candidate_airports}")
     price_per_choice = {
         (airport, center_airport, current_day): price
         for center_airport in center_airports
         for airport in airports
         for day in date_range(from_date, to_date, 7)
-        for current_day, price in client.get_price_between_at_next_7_days(
-            airport, center_airport, day
+        for current_day, price in get_travel_price(
+            client, airport, center_airport, day
         ).items()
     }
     price_per_choice_agg = [
