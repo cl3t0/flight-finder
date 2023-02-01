@@ -7,14 +7,36 @@ from result import Ok, Err
 
 
 class CachingWrapper(AbstractApi):
+    """
+    Class that wraps an API client with a cache mechanism.
+    """
+
     def __init__(self, client: AbstractApi, cacher: AbstractCacher) -> None:
+        """
+        Initialize CachingWrapper object with an API client and a cache mechanism.
+
+        Args:
+            client (AbstractApi): API client to be wrapped.
+            cacher (AbstractCacher): Cache mechanism to be used.
+        """
         self.client = client
         self.cacher = cacher
 
     def get_price_between_at_next_7_days(
         self, airport1: str, airport2: str, chosen_date: date
     ) -> Dict[date, Optional[float]]:
+        """
+        Get the prices between two airports for the next 7 days starting from a chosen date.
+        The results are either fetched from the cache or the API client, and the results are stored in the cache.
 
+        Args:
+            airport1 (str): Code of the departure airport.
+            airport2 (str): Code of the arrival airport.
+            chosen_date (date): The date to start fetching the prices.
+
+        Returns:
+            Dict[date, Optional[float]]: A dictionary where the keys are dates and the values are the prices. If the price is not available, the value is None.
+        """
         required_data_range = list(
             date_range(chosen_date, chosen_date + timedelta(days=7))
         )

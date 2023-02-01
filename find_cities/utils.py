@@ -9,12 +9,12 @@ def date_range(
     Generates a range of dates between a start and end date with a specified step size.
 
     Args:
-    - start_date (date): Start of the date range.
-    - end_date (date): End of the date range.
-    - step (int, optional): Step size for the range, by default 1.
+        start_date (date): Start of the date range.
+        end_date (date): End of the date range.
+        step (int, optional): Step size for the range, by default 1.
 
     Yields:
-    - date: The next date in the range.
+        date: The next date in the range.
 
     Example:
     ```

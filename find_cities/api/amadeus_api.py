@@ -6,23 +6,40 @@ import requests
 
 
 class FlightData(TypedDict):
+    """A typed dictionary representing flight data."""
+
     price: Dict[str, str]
     itineraries: List[Dict[str, List[Dict[str, Dict[str, str]]]]]
 
 
 class AmadeusApi(AbstractApi):
+    """A concrete implementation of the abstract API class for retrieving flight information from the Amadeus API."""
+
     class MissingFieldError(Exception):
+        """Raised when a required field is missing in the API response."""
+
         pass
 
     class BadStatusCode(Exception):
+        """Raised when the API returns a non-200 status code.
+
+        Attributes:
+            status_code (int): The returned status code.
+            message (bytes): The error message.
+        """
+
         def __init__(self, status_code: int, message: bytes) -> None:
             super().__init__(f"{status_code}: {str(message)}")
 
     class NoItineraryError(Exception):
+        """Raised when no itinerary is found in the API response."""
+
         def __init__(self) -> None:
             super().__init__("")
 
     class NoSegmentError(Exception):
+        """Raised when no segment is found in the API response."""
+
         def __init__(self) -> None:
             super().__init__("")
 
@@ -30,6 +47,13 @@ class AmadeusApi(AbstractApi):
     main_route = "v2/shopping/flight-offers"
 
     def __init__(self, key: str, secret: str, url: str) -> None:
+        """Initialize the AmadeusApi object.
+
+        Args:
+            key (str): The API key.
+            secret (str): The API secret.
+            url (str): The API base URL.
+        """
         self.key = key
         self.secret = secret
         self.url = url
@@ -39,6 +63,20 @@ class AmadeusApi(AbstractApi):
 
     @staticmethod
     def get_token(url: str, key: str, secret: str) -> str:
+        """Get an access token from the API.
+
+        Args:
+            url (str): The URL to get the access token from.
+            key (str): The API key.
+            secret (str): The API secret.
+
+        Returns:
+            str: The access token.
+
+        Raises:
+            AmadeusApi.BadStatusCode: If the API returns a non-200 status code.
+            AmadeusApi.MissingFieldError: If the 'access_token' field is missing in the API response.
+        """
         response = requests.post(
             url,
             headers={"Content-Type": "application/x-www-form-urlencoded"},
@@ -65,6 +103,19 @@ class AmadeusApi(AbstractApi):
         destination_airport: str,
         central_date: date,
     ) -> requests.Response:
+        """
+        A helper method to make API requests to Amadeus API.
+
+        Args:
+            url (str): API endpoint URL.
+            access_token (str): API access token.
+            origin_airport (str): Origin airport code.
+            destination_airport (str): Destination airport code.
+            central_date (date): Date in the middle of the date range for flight search.
+
+        Returns:
+            requests.Response: API response.
+        """
         response = requests.post(
             url,
             headers={"Authorization": f"Bearer {access_token}"},
@@ -92,6 +143,17 @@ class AmadeusApi(AbstractApi):
     def get_price_between_at_next_7_days(
         self, origin_airport: str, destination_airport: str, chosen_date: date
     ) -> Dict[date, Optional[float]]:
+        """
+        A method to get the price of flights between two airports in the next 7 days.
+
+        Args:
+            origin_airport (str): Origin airport code.
+            destination_airport (str): Destination airport code.
+            chosen_date (date): Date to start the date range for flight search.
+
+        Returns:
+            Dict[date, Optional[float]]: A dictionary where keys are dates and values are the corresponding flight price.
+        """
 
         central_date = chosen_date + timedelta(days=3)
 
