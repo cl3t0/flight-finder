@@ -11,6 +11,13 @@ Point3D = Tuple[float, float, float]
 
 
 class NotListedAirports(Exception):
+    """
+    Exception to raise when an airport from the input list is not in the all_airports list.
+
+    Args:
+        airports (List[str]): List of not listed airports
+    """
+
     def __init__(self, airports: List[str]) -> None:
         super().__init__(str(airports))
 
@@ -18,6 +25,20 @@ class NotListedAirports(Exception):
 def get_average_airports(
     airports: List[str], airports_table: AbstractAirportsTable, limit: int
 ) -> List[str]:
+    """
+    Get average coordinate of the given airports and returns closest airports to the average coordinate.
+
+    Args:
+        airports (List[str]): List of airports
+        airports_table (AbstractAirportsTable): Object to get all the airports and closest airports
+        limit (int): Number of closest airports to return
+
+    Returns:
+        List[str]: List of closest airports to the average coordinate
+
+    Raises:
+        NotListedAirports: If an airport from the input list is not in the all_airports list.
+    """
     all_airports = airports_table.get_all()
 
     not_listed_airports = [
@@ -36,6 +57,19 @@ def get_average_airports(
 def get_travel_price(
     client: AbstractApi, airport1: str, airport2: str, day: date
 ) -> Dict[date, float]:
+    """
+    Get travel prices from airport1 to airport2 for the next 7 days starting from `day`.
+
+    Args:
+        client (AbstractApi): Object to make API calls to get the travel prices
+        airport1 (str): Source airport
+        airport2 (str): Destination airport
+        day (date): Start day for travel prices
+
+    Returns:
+        Dict[date, float]: Dictionary with date as key and travel price as value
+    """
+
     print(f"Getting price from {airport1} to {airport2} at {str(day)}...")
 
     return (
@@ -59,6 +93,22 @@ def find_best_airport_and_day(
     to_date: date,
     center_airports_limit: int = 10,
 ) -> Tuple[str, date, float]:
+    """
+    This function finds the best airport and date to travel by getting the travel prices of all airports within the
+    specified range, then aggregating and choosing the best choice.
+
+    Args:
+        airports (List[str]): List of airports to travel from.
+        client (AbstractApi): API Client to get travel prices from.
+        airports_table (AbstractAirportsTable): Table containing airport information.
+        from_date (date): Starting date of travel.
+        to_date (date): Ending date of travel.
+        center_airports_limit (int): Limit of center airports to get average airport information from.
+
+    Returns:
+        Tuple[str, date, float]: Tuple containing the best airport, date, and travel price.
+    """
+
     center_airports = get_average_airports(
         airports, airports_table, center_airports_limit
     )

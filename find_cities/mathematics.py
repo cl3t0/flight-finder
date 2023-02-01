@@ -62,6 +62,7 @@ def get_average_coordinate(points: List[Point2D]) -> Point2D:
 
     Args:
         points (List[Point2D]): List of points in 2D coordinates
+
     Returns:
         Point2D: Tuple of latitude and longitude of the average point in degrees
     """

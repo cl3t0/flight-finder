@@ -153,6 +153,12 @@ class AmadeusApi(AbstractApi):
 
         Returns:
             Dict[date, Optional[float]]: A dictionary where keys are dates and values are the corresponding flight price.
+
+        Raises:
+            AmadeusApi.BadStatusCode: If the API returns a non-200 status code.
+            AmadeusApi.MissingFieldError: If some field is missing in the API response.
+            AmadeusApi.NoItineraryError: If the "itineraries" field is found but has no elements.
+            AmadeusApi.NoSegmentError: If the "segments" field is found but has no elements.
         """
 
         central_date = chosen_date + timedelta(days=3)
