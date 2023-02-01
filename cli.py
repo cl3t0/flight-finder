@@ -10,9 +10,18 @@ key = config("API_KEY")
 secret = config("API_SECRET")
 url = config("API_URL")
 
-airports = ["JFK", "GRU", "PHX"]
-first_date = date(year=2023, month=3, day=1)
-last_date = date(year=2023, month=8, day=1)
+airports = []
+
+while True:
+    airport = input("Enter a new airport (Enter an empty string to stop): ")
+    if airport == "":
+        break
+    else:
+        airports.append(airport)
+
+first_date = date.fromisoformat(input("Enter the lower bound date: "))
+last_date = date.fromisoformat(input("Enter the upper bound date: "))
+center_airports_limit = int(input("Enter the center airport limit: "))
 cacher = SqliteCacher("cache.db")
 client = CachingWrapper(AmadeusApi(key, secret, url), cacher)
 airports_table = SqliteAirportsTable()
@@ -23,7 +32,7 @@ result = find_best_airport_and_day(
     airports_table,
     first_date,
     last_date,
-    center_airports_limit=15,
+    center_airports_limit=center_airports_limit,
 )
 
 print(result)
