@@ -85,14 +85,15 @@ def get_travel_price(
     )
 
 
-def find_best_airport_and_day(
+def find_best_airports_and_days(
     airports: List[str],
     client: AbstractApi,
     airports_table: AbstractAirportsTable,
     from_date: date,
     to_date: date,
     center_airports_limit: int = 10,
-) -> Tuple[str, date, float]:
+    suggestion_quantity: int = 10,
+) -> List[Tuple[str, date, float]]:
     """
     This function finds the best airport and date to travel by getting the travel prices of all airports within the
     specified range, then aggregating and choosing the best choice.
@@ -104,9 +105,10 @@ def find_best_airport_and_day(
         from_date (date): Starting date of travel.
         to_date (date): Ending date of travel.
         center_airports_limit (int): Limit of center airports to get average airport information from.
+        suggestion_quantity (int): Length of the output suggestion list
 
     Returns:
-        Tuple[str, date, float]: Tuple containing the best airport, date, and travel price.
+        List[Tuple[str, date, float]]: List of tuples containing the best airports, dates, and travel prices.
     """
 
     center_airports = get_average_airports(
@@ -136,5 +138,6 @@ def find_best_airport_and_day(
         for candidate_airport in candidate_airports
         for day in date_range(from_date, to_date)
     ]
-    best_choice = min(price_per_choice_agg, key=lambda x: x[2])
-    return best_choice
+    ordered_choices = sorted(price_per_choice_agg, key=lambda x: x[2])
+    best_choices = ordered_choices[:suggestion_quantity]
+    return best_choices
