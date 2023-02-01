@@ -1,7 +1,7 @@
-from find_cities.find import get_average_airports, find_best_airport_and_day
-from find_cities.airports_table.airports_table_int import AbstractAirportsTable
-from find_cities.api.api_int import AbstractApi
-from find_cities.utils import date_range
+from flight_finder.find import get_average_airports, find_best_airport_and_day
+from flight_finder.airports_table.airports_table_int import AbstractAirportsTable
+from flight_finder.api.api_int import AbstractApi
+from flight_finder.utils import date_range
 from typing import Tuple, Dict, List, Optional
 from datetime import date, timedelta
 

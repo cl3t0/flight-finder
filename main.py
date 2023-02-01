@@ -1,8 +1,8 @@
-from find_cities.airports_table.airports_table_sqlite import SqliteAirportsTable
-from find_cities.find import find_best_airport_and_day
-from find_cities.api.amadeus_api import AmadeusApi
-from find_cities.cacher.sqlite_cacher import SqliteCacher
-from find_cities.api.caching_wrapper import CachingWrapper
+from flight_finder.airports_table.airports_table_sqlite import SqliteAirportsTable
+from flight_finder.find import find_best_airport_and_day
+from flight_finder.api.amadeus_api import AmadeusApi
+from flight_finder.cacher.sqlite_cacher import SqliteCacher
+from flight_finder.api.caching_wrapper import CachingWrapper
 from decouple import config
 from datetime import date
 

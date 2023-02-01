@@ -1,4 +1,4 @@
-from find_cities.utils import date_range
+from flight_finder.utils import date_range
 from datetime import date
 
 

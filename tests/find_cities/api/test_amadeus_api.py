@@ -1,5 +1,5 @@
 import pytest
-from find_cities.api.amadeus_api import AmadeusApi
+from flight_finder.api.amadeus_api import AmadeusApi
 from decouple import config
 from datetime import date
 

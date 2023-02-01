@@ -1,8 +1,8 @@
-from find_cities.cacher.cacher_int import AbstractCacher
-from find_cities.api.api_int import AbstractApi
+from flight_finder.cacher.cacher_int import AbstractCacher
+from flight_finder.api.api_int import AbstractApi
 from typing import Dict, Optional
 from datetime import date, timedelta
-from find_cities.utils import date_range
+from flight_finder.utils import date_range
 from result import Ok, Err
 
 

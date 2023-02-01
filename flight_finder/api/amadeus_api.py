@@ -1,5 +1,5 @@
-from find_cities.api.api_int import AbstractApi
-from find_cities.utils import date_range
+from flight_finder.api.api_int import AbstractApi
+from flight_finder.utils import date_range
 from typing import List, Dict, TypedDict, Optional
 from datetime import date, timedelta, datetime
 import requests
