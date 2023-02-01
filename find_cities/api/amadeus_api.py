@@ -1,4 +1,4 @@
-from find_cities.api_int import AbstractApi
+from find_cities.api.api_int import AbstractApi
 from find_cities.utils import date_range
 from typing import List, Dict, TypedDict, Optional
 from datetime import date, timedelta, datetime

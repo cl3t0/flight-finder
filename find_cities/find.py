@@ -1,6 +1,6 @@
 from find_cities.airports_table_int import AbstractAirportsTable
 from find_cities.mathematics import get_average_coordinate
-from find_cities.api_int import AbstractApi
+from find_cities.api.api_int import AbstractApi
 from find_cities.utils import date_range
 from typing import Tuple, List, Dict
 from datetime import date, timedelta
