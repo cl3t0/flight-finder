@@ -1,4 +1,4 @@
-from flight_finder.find import get_average_airports, find_best_airport_and_day
+from flight_finder.find import get_average_airports, find_best_airports_and_days
 from flight_finder.airports_table.airports_table_int import AbstractAirportsTable
 from flight_finder.api.api_int import AbstractApi
 from flight_finder.utils import date_range
@@ -107,7 +107,7 @@ def test_find_best_airport_and_day():
     airports = ["B", "C", "D"]
     start_date = date(year=2023, month=1, day=1)
     end_date = date(year=2023, month=1, day=8)
-    result = find_best_airport_and_day(
-        airports, client, airports_table, start_date, end_date, 2
+    result = find_best_airports_and_days(
+        airports, client, airports_table, start_date, end_date, 2, 1
     )
-    assert result == ("A", date(year=2023, month=1, day=7), 9)
+    assert result == [("A", date(year=2023, month=1, day=7), 9)]
