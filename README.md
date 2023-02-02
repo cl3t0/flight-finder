@@ -104,4 +104,4 @@ cacher = SqliteCacher("cache.db")
 client = CachingWrapper(AmadeusApi(key, secret, url), cacher)
 ```
 
-With everything done and working, I documented every function, created the Dockerfile, created the Makefile, wrote this README and adjusted every detail to work as I wanted. That's it.
+With everything done and working, I documented every function, created the Dockerfile, created the Makefile, created the CI pipeline with GitHub Actions, wrote this README and adjusted every detail to work as I wanted. That's it.de
