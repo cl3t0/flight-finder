@@ -7,6 +7,7 @@ class SqliteAirportsTable(AbstractAirportsTable):
     def __init__(self) -> None:
 
         self.conn = sqlite3.connect("global_airports_sqlite.db")
+        self.conn.create_function("POW", 2, lambda x, y: x**y)
 
     def get_all(self) -> Dict[str, Tuple[float, float]]:
         cursor = self.conn.cursor()

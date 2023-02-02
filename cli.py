@@ -24,7 +24,7 @@ last_date = date.fromisoformat(input("Enter the upper bound date: "))
 center_airports_limit = int(input("Enter the center airports limit: "))
 suggestion_quantity = int(input("Enter how much flight suggestions do you want: "))
 
-cacher = SqliteCacher("cache.db")
+cacher = SqliteCacher("cache/cache.db")
 client = CachingWrapper(AmadeusApi(key, secret, url), cacher)
 airports_table = SqliteAirportsTable()
 

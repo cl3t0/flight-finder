@@ -1,3 +1,5 @@
 .env
 __pycache__
-cache.db
+cache
+.mypy_cache
+.pytest_cache

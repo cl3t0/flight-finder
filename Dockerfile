@@ -1,33 +1,18 @@
-FROM python:3.10.9-alpine
+FROM python:3.10.9
 
-ARG YOUR_ENV
+RUN apt-get update
 
-ENV YOUR_ENV=${YOUR_ENV} \
-    PYTHONFAULTHANDLER=1 \
-    PYTHONUNBUFFERED=1 \
-    PYTHONHASHSEED=random \
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.3
+RUN useradd -ms /bin/bash myuser
 
-RUN apk update && apk add python3-dev \
-    gcc \
-    libc-dev \
-    libffi-dev
+ENV POETRY_VERSION=1.3
 
-# System deps:
-RUN pip install "poetry==$POETRY_VERSION"
+RUN pip install poetry==$POETRY_VERSION
 
-# Copy only requirements to cache them in docker layer
 WORKDIR /code
-COPY poetry.lock pyproject.toml /code/
-
-# Project initialization:
-RUN poetry config virtualenvs.create false \
-    && poetry install $(test "$YOUR_ENV" == production && echo "--no-dev") --no-interaction --no-ansi --no-root
-
-# Creating folders, and files for a project:
 COPY . /code
 
-ENTRYPOINT poetry run python cli.py
+RUN chown -R myuser /code
+
+USER myuser
+
+RUN poetry install
