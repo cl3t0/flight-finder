@@ -104,4 +104,36 @@ cacher = SqliteCacher("cache.db")
 client = CachingWrapper(AmadeusApi(key, secret, url), cacher)
 ```
 
+In the end, I got 87% test coverage. Take a look:
+
+
+```
+---------- coverage: platform linux, python 3.8.10-final-0 -----------
+Name                                                               Stmts   Miss  Cover
+--------------------------------------------------------------------------------------
+cli.py                                                                29     29     0%
+flight_finder/__init__.py                                              0      0   100%
+flight_finder/airports_table/airports_table_int.py                     9      2    78%
+flight_finder/airports_table/airports_table_sqlite.py                 16      0   100%
+flight_finder/api/amadeus_api.py                                      83     17    80%
+flight_finder/api/api_int.py                                           7      1    86%
+flight_finder/api/caching_wrapper.py                                  25      2    92%
+flight_finder/cacher/cacher_int.py                                    11      2    82%
+flight_finder/cacher/sqlite_cacher.py                                 25      1    96%
+flight_finder/find.py                                                 33      2    94%
+flight_finder/mathematics.py                                          24      0   100%
+flight_finder/utils.py                                                 5      0   100%
+tests/__init__.py                                                      0      0   100%
+tests/flight_finder/__init__.py                                        0      0   100%
+tests/flight_finder/airports_table/test_airports_table_sqlite.py      13      0   100%
+tests/flight_finder/api/test_amadeus_api.py                           12      0   100%
+tests/flight_finder/api/test_caching_crust.py                         40      0   100%
+tests/flight_finder/cacher/test_sqlite_cacher.py                      17      0   100%
+tests/flight_finder/test_find.py                                      28      0   100%
+tests/flight_finder/test_mathematics.py                               26      0   100%
+tests/flight_finder/test_utils.py                                     12      0   100%
+--------------------------------------------------------------------------------------
+TOTAL                                                                415     56    87%
+```
+
 With everything done and working, I documented every function, created the Dockerfile, created the Makefile, created the CI pipeline with GitHub Actions, wrote this README and adjusted every detail to work as I wanted. That's it.de
