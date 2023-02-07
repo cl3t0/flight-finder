@@ -1,8 +1,11 @@
 from flight_finder.api.api_int import AbstractApi
 from flight_finder.utils import date_range
-from typing import List, Dict, TypedDict, Optional
+from typing import List, Dict, TypedDict, Optional, Any
 from datetime import date, timedelta, datetime
 import requests
+import time
+
+API_RATE_LIMIT = 0.2
 
 
 class FlightData(TypedDict):
@@ -45,6 +48,7 @@ class AmadeusApi(AbstractApi):
 
     token_route = "v1/security/oauth2/token"
     main_route = "v2/shopping/flight-offers"
+    last_req_time = 0.0
 
     def __init__(self, key: str, secret: str, url: str) -> None:
         """Initialize the AmadeusApi object.
@@ -57,12 +61,26 @@ class AmadeusApi(AbstractApi):
         self.key = key
         self.secret = secret
         self.url = url
-        self.access_token = AmadeusApi.get_token(
+        self.access_token = self.get_token(
             f"{self.url}/{self.token_route}", key, secret
         )
 
-    @staticmethod
-    def get_token(url: str, key: str, secret: str) -> str:
+    def make_req(
+        self,
+        url: str,
+        headers: Dict[str, str] = {},
+        data: Optional[str] = None,
+        json: Optional[Dict[str, Any]] = None,
+    ) -> requests.Response:
+        if time.time() - self.last_req_time < API_RATE_LIMIT:
+            time.sleep(API_RATE_LIMIT - (time.time() - self.last_req_time))
+        response = requests.post(url, headers=headers, data=data, json=json)
+        self.last_req_time = time.time()
+        if response.status_code == 429:
+            return self.make_req(url, headers=headers, data=data, json=json)
+        return response
+
+    def get_token(self, url: str, key: str, secret: str) -> str:
         """Get an access token from the API.
 
         Args:
@@ -77,7 +95,8 @@ class AmadeusApi(AbstractApi):
             AmadeusApi.BadStatusCode: If the API returns a non-200 status code.
             AmadeusApi.MissingFieldError: If the 'access_token' field is missing in the API response.
         """
-        response = requests.post(
+
+        response = self.make_req(
             url,
             headers={"Content-Type": "application/x-www-form-urlencoded"},
             data=f"grant_type=client_credentials&client_id={key}&client_secret={secret}",
@@ -95,8 +114,8 @@ class AmadeusApi(AbstractApi):
 
         return access_token
 
-    @staticmethod
-    def make_custom_req(
+    def make_flight_req(
+        self,
         url: str,
         access_token: str,
         origin_airport: str,
@@ -116,7 +135,7 @@ class AmadeusApi(AbstractApi):
         Returns:
             requests.Response: API response.
         """
-        response = requests.post(
+        response = self.make_req(
             url,
             headers={"Authorization": f"Bearer {access_token}"},
             json={
@@ -163,7 +182,7 @@ class AmadeusApi(AbstractApi):
 
         central_date = chosen_date + timedelta(days=3)
 
-        response = AmadeusApi.make_custom_req(
+        response = self.make_flight_req(
             f"{self.url}/{self.main_route}",
             self.access_token,
             origin_airport,
@@ -172,10 +191,10 @@ class AmadeusApi(AbstractApi):
         )
 
         if response.status_code == 401:
-            self.access_token = AmadeusApi.get_token(
+            self.access_token = self.get_token(
                 f"{self.url}/{self.token_route}", self.key, self.secret
             )
-            response = AmadeusApi.make_custom_req(
+            response = self.make_flight_req(
                 f"{self.url}/{self.main_route}",
                 self.access_token,
                 origin_airport,
