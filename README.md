@@ -136,4 +136,4 @@ tests/flight_finder/test_utils.py                                     12      0 
 TOTAL                                                                415     56    87%
 ```
 
-With everything done and working, I documented every function, created the Dockerfile, created the Makefile, created the CI pipeline with GitHub Actions, wrote this README and adjusted every detail to work as I wanted. That's it.de
+With everything done and working, I documented every function, created the Dockerfile, created the Makefile, created the CI pipeline with GitHub Actions, wrote this README and adjusted every detail to work as I wanted. That's it.
