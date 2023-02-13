@@ -1,6 +1,6 @@
 # Flight Finder
 
-This project helps you find the best airport and day to travel based on the lowest price.
+This project helps you and your friends, who are located in different parts of the world, to find the best airport and day to travel based on the lowest total price.
 
 ## Running with Docker
 
